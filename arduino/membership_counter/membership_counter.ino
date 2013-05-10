@@ -4,6 +4,14 @@ London Hackspace Membership Counter
 Large parts of this code are from Matt Little (info@re-innovation.co.uk / www.re-innovation.co.uk)
 */
 
+#include <Dhcp.h>
+#include <Dns.h>
+#include <Ethernet.h>
+#include <EthernetClient.h>
+#include <EthernetServer.h>
+#include <EthernetUdp.h>
+#include <util.h>
+
 const int sLatch = A3;
 const int sData = A4;
 const int sClk =  A5;
