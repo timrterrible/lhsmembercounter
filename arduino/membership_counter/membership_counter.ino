@@ -2,6 +2,8 @@
 London Hackspace Membership Counter
  
  Large parts of this code are from Matt Little (info@re-innovation.co.uk / www.re-innovation.co.uk)
+ Remainder butched by T Reynolds ( tim@christwithfries.net / www.appliedpraxis.com )
+ 
  */
 
 #include <Dhcp.h>
@@ -11,15 +13,11 @@ London Hackspace Membership Counter
 #include <EthernetServer.h>
 #include <EthernetUdp.h>
 #include <util.h>
+#include <SPI.h>
 
 const int sLatch = A3;
 const int sData = A4;
 const int sClk =  A5;
-
-long int number1 = 0;
-long int number2 = 0;
-long int number3 = 0;
-long int number4 = 0;  
 
 
 void setup()
@@ -33,22 +31,34 @@ void setup()
 
 void loop()
 {
+  //Hardcoded count to display TODO: Clever ethernet stuff.
+  long int iNumber1 = 0;
+  long int iNumber2 = 6;
+  long int iNumber3 = 6;
+  long int iNumber4 = 0;
+
+  //Take latch low
   digitalWrite(sLatch, LOW);
 
-  shiftOut(sData, sClk, MSBFIRST, number4);
-  shiftOut(sData, sClk, MSBFIRST, number3);
-  shiftOut(sData, sClk, MSBFIRST, number2); 
-  shiftOut(sData, sClk, MSBFIRST, number1); 
+  //Update display
+  shiftOut(sData, sClk, MSBFIRST, iNumber4);
+  shiftOut(sData, sClk, MSBFIRST, iNumber3);
+  shiftOut(sData, sClk, MSBFIRST, iNumber2); 
+  shiftOut(sData, sClk, MSBFIRST, iNumber1); 
 
+  //Take latch high
   digitalWrite(sLatch, HIGH);
 
-  Serial.println(i);
-  Serial.println(number1);
-  Serial.println(number2);
-  Serial.println(number3);
-  Serial.println(number4);
+  //Echo to serial
+  String sNumber1 = String(iNumber1);
+  String sNumber2 = String(iNumber2);
+  String sNumber3 = String(iNumber3);
+  String sNumber4 = String(iNumber4);
+  String sDisplay =  String(sNumber1 + sNumber2 + sNumber3 + sNumber4);
+  Serial.println(sDisplay);
 
-  delay(100);   
+  //Wait 1 sec
+  delay(1000);
 }
 
 int int7segment (int segmentData)
@@ -94,4 +104,3 @@ int int7segment (int segmentData)
   }
   return displayData;
 }
-
