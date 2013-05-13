@@ -19,7 +19,6 @@ const int sLatch = A3;
 const int sData = A4;
 const int sClk =  A5;
 
-
 void setup()
 {
   Serial.begin(9600);
@@ -31,11 +30,21 @@ void setup()
 
 void loop()
 {
-  //Hardcoded count to display TODO: Clever ethernet stuff.
-  long int iNumber1 = 0;
-  long int iNumber2 = 6;
-  long int iNumber3 = 6;
-  long int iNumber4 = 0;
+  //Random count to display TODO: Replace with clever ethernet stuff.
+  long int iNumber1 = random(0,9);
+  long int iNumber2 = random(0,9);
+  long int iNumber3 = random(0,9);
+  long int iNumber4 = random(0,9);
+  
+  //Echo to serial
+  String sPre = "Currently London Hackspace has ";
+  String sPost = " members.";
+  String sNumber1 = String(iNumber1);
+  String sNumber2 = String(iNumber2);
+  String sNumber3 = String(iNumber3);
+  String sNumber4 = String(iNumber4);
+  String sDisplay =  String(sPre + sNumber1 + sNumber2 + sNumber3 + sNumber4 + sPost);
+  Serial.println(sDisplay);
 
   //Take latch low
   digitalWrite(sLatch, LOW);
@@ -43,19 +52,11 @@ void loop()
   //Update display
   shiftOut(sData, sClk, MSBFIRST, iNumber4);
   shiftOut(sData, sClk, MSBFIRST, iNumber3);
-  shiftOut(sData, sClk, MSBFIRST, iNumber2); 
+  shiftOut(sData, sClk, MSBFIRST, iNumber2);   
   shiftOut(sData, sClk, MSBFIRST, iNumber1); 
-
+  
   //Take latch high
   digitalWrite(sLatch, HIGH);
-
-  //Echo to serial
-  String sNumber1 = String(iNumber1);
-  String sNumber2 = String(iNumber2);
-  String sNumber3 = String(iNumber3);
-  String sNumber4 = String(iNumber4);
-  String sDisplay =  String(sNumber1 + sNumber2 + sNumber3 + sNumber4);
-  Serial.println(sDisplay);
 
   //Wait 1 sec
   delay(1000);
@@ -100,7 +101,8 @@ int int7segment (int segmentData)
   case 10:
     displayData = B00000001;  // Decimal point ON  
     break;
-
   }
   return displayData;
 }
+
+
