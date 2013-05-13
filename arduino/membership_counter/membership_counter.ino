@@ -1,7 +1,7 @@
 /*
 London Hackspace Membership Counter
  
- Large parts of this code are from Matt Little (info@re-innovation.co.uk / www.re-innovation.co.uk)
+ LED Segment shifting, displaydata, etc are from Matt Little (info@re-innovation.co.uk / www.re-innovation.co.uk)
  Remainder butched by T Reynolds ( tim@christwithfries.net / www.appliedpraxis.com )
  
  */
@@ -19,24 +19,57 @@ const int sLatch = A3;
 const int sData = A4;
 const int sClk =  A5;
 
+byte mac[] = {  
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+
+unsigned int localPort = 8888;
+
+EthernetUDP UDP;
+
 void setup()
 {
-  Serial.begin(9600);
 
   pinMode(sLatch, OUTPUT);
   pinMode(sClk, OUTPUT);
-  pinMode(sData, OUTPUT);  
+  pinMode(sData, OUTPUT);
+
+  Serial.begin(9600);
+  Serial.println("Membership counter starting up.");
+
+  Serial.print("Attempting to get IP via DHCP...");
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println("failed.");
+    Serial.println("Unable to configure Ethernet using DHCP, halting.");
+    for(;;)
+      ;
+  } 
+  else {
+    Serial.println("done.");
+    Serial.print("IP address: ");
+    for (byte thisByte = 0; thisByte < 4; thisByte++) {
+      Serial.print(Ethernet.localIP()[thisByte], DEC);
+      Serial.print("."); 
+    }
+  }
+
+  Serial.println();
+
+  Serial.print("Starting listener on port ");
+  Serial.print(localPort);
+  Serial.print("...");
+  Serial.println();
+
+  UDP.begin(localPort);
 }
 
 void loop()
 {
-  //Random count to display TODO: Replace with clever ethernet stuff.
+
   long int iNumber1 = random(0,9);
   long int iNumber2 = random(0,9);
   long int iNumber3 = random(0,9);
   long int iNumber4 = random(0,9);
-  
-  //Echo to serial
+
   String sPre = "Currently London Hackspace has ";
   String sPost = " members.";
   String sNumber1 = String(iNumber1);
@@ -46,19 +79,15 @@ void loop()
   String sDisplay =  String(sPre + sNumber1 + sNumber2 + sNumber3 + sNumber4 + sPost);
   Serial.println(sDisplay);
 
-  //Take latch low
   digitalWrite(sLatch, LOW);
 
-  //Update display
   shiftOut(sData, sClk, MSBFIRST, iNumber4);
   shiftOut(sData, sClk, MSBFIRST, iNumber3);
   shiftOut(sData, sClk, MSBFIRST, iNumber2);   
   shiftOut(sData, sClk, MSBFIRST, iNumber1); 
-  
-  //Take latch high
+
   digitalWrite(sLatch, HIGH);
 
-  //Wait 1 sec
   delay(1000);
 }
 
