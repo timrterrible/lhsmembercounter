@@ -102,7 +102,7 @@ int int7segment (int segmentData)
     displayData = B11111100;  // The number 0 in binary   
     break;
   case 1:
-    displayData = B01100000;  // The number 1 in binary   m
+    displayData = B01100000;  // The number 1 in binary
     break;
   case 2:
     displayData = B11011010;  // The number 2 in binary   
