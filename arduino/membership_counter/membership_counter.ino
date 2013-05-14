@@ -93,7 +93,8 @@ void loop()
 
 int int7segment (int segmentData)
 {
-  int displayData;
+  int displayData = B11111100;
+
 
   switch (segmentData)
   {
@@ -101,7 +102,7 @@ int int7segment (int segmentData)
     displayData = B11111100;  // The number 0 in binary   
     break;
   case 1:
-    displayData = B01100000;  // The number 1 in binary   
+    displayData = B01100000;  // The number 1 in binary   m
     break;
   case 2:
     displayData = B11011010;  // The number 2 in binary   
@@ -133,5 +134,7 @@ int int7segment (int segmentData)
   }
   return displayData;
 }
+
+
 
 
